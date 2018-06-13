@@ -8,4 +8,5 @@ for line in sys.stdin:
     d[line] = d[line] +1
 
 for k in d.keys():
-    print k.replace(';',' ')+"\t|\t" + str(d[k])
+    if d[k] > 40:
+        print k.replace(';',' ').replace('\n','')+"\t" + str(d[k])

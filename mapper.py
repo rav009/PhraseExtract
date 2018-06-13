@@ -21,7 +21,9 @@ stop_words = [u'mailto', u'i', u'me', u'my', u'myself', u'we', u'our', u'ours', 
               u"didn't", u'doesn', u"doesn't", u'hadn', u"hadn't", u'hasn', u"hasn't", u'haven', u"haven't", u'isn',
               u"isn't", u'ma', u'mightn', u"mightn't", u'mustn', u"mustn't", u'needn', u"needn't", u'shan', u"shan't",
               u'shouldn', u"shouldn't", u'wasn', u"wasn't", u'weren', u"weren't", u'won', u"won't", u'wouldn',
-              u"wouldn't", u'up', u'e', u'c']
+              u"wouldn't", u"up", u"e", u"c", u"yes", u"good", u"february", u"2017", u"exe", u"thanks", u"september",
+              u"help", u"tuesday", u"pm", u"friday", u"ok", u"salesforce", u"thank", u"questions", u"like", u"seems",
+              u"sorry", u"please", u"via", u"iphone", u"email", u"thursday"]
 
 phrase_len = 3
 
@@ -126,6 +128,7 @@ def tokenize(s):
     s = s.replace('#', ' ')
     s = s.replace('__', ' ')
     s = s.replace(' _ ', ' ')
+    s = s.replace(' = ', ' ')
 
     # recognize&hide email
     s, edict = hideemail(s)
