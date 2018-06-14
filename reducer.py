@@ -9,4 +9,4 @@ for line in sys.stdin:
 
 for k in d.keys():
     if d[k] > 40:
-        print k.replace(';',' ').replace('\n','')+"\t" + str(d[k])
+        print k.replace(';', ' ').replace('\n', '')+"\t" + str(d[k])
