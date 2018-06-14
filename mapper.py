@@ -22,9 +22,11 @@ stop_words = [u'mailto', u'i', u'me', u'my', u'myself', u'we', u'our', u'ours', 
               u"isn't", u'ma', u'mightn', u"mightn't", u'mustn', u"mustn't", u'needn', u"needn't", u'shan', u"shan't",
               u'shouldn', u"shouldn't", u'wasn', u"wasn't", u'weren', u"weren't", u'won', u"won't", u'wouldn',
               u"wouldn't", u"up", u"e", u"c", u"yes", u"good", u"february", u"2017", u"exe", u"thanks", u"september",
+
               u"help", u"tuesday", u"pm", u"friday", u"ok", u"salesforce", u"thank", u"questions", u"like", u"seems",
               u"sorry", u"please", u"via", u"iphone", u"email", u"thursday", u"wednesday", u"month", u"week", u"europe",
-              u"monday", u"sent", u"best", u"hi", u"okay", u"let", u"would", u"e-mail", u"http", u"get", u"per"]
+              u"monday", u"sent", u"best", u"hi", u"okay", u"let", u"would", u"e-mail", u"http", u"get", u"per",
+              u"elekta", u"support", u"uk", u"ip", u"march", u"england"]
 
 phrase_len = 3
 
@@ -112,6 +114,7 @@ def tokenize(s):
     otherwordsregex = r"[^\s\w:\+\-,\?\{\}\[\]\>\<@\$\.\(\)\#/\|'\"!&*;=~%\^]+"
     s = re.sub(otherwordsregex, ' ', s)
 
+    s = s.replace('&amp;', ' ')
     s = s.replace('&gt;', ' ')
     s = s.replace('&lt;', ' ')
     s = s.replace(';', ' ')
@@ -137,6 +140,7 @@ def tokenize(s):
     s = s.replace('__', ' ')
     s = s.replace(' _ ', ' ')
     s = s.replace(' = ', ' ')
+    s = s.replace('!', ' ')
 
     # recognize&hide email
     s, edict = hideemail(s)
@@ -158,8 +162,8 @@ def tokenize(s):
     s = s.replace('-', ' ')
     s = s.replace('.', ' ')
     s = s.replace('&', ' ')
-    s = s.replace('&amp;', ' ')
-    return [restorehiddenword(w, d) for w in word_tokenize(s) if w not in stop_words]
+    rs = [restorehiddenword(w, d) for w in word_tokenize(s)]
+    return [w for w in rs if w not in stop_words]
 
 
 for line in sys.stdin:
