@@ -23,7 +23,8 @@ stop_words = [u'mailto', u'i', u'me', u'my', u'myself', u'we', u'our', u'ours', 
               u'shouldn', u"shouldn't", u'wasn', u"wasn't", u'weren', u"weren't", u'won', u"won't", u'wouldn',
               u"wouldn't", u"up", u"e", u"c", u"yes", u"good", u"february", u"2017", u"exe", u"thanks", u"september",
               u"help", u"tuesday", u"pm", u"friday", u"ok", u"salesforce", u"thank", u"questions", u"like", u"seems",
-              u"sorry", u"please", u"via", u"iphone", u"email", u"thursday"]
+              u"sorry", u"please", u"via", u"iphone", u"email", u"thursday", u"wednesday", u"month", u"week", u"europe",
+              u"monday", u"sent", u"best", u"hi", u"okay", u"let", u"would", u"e-mail", u"http", u"get", u"per"]
 
 phrase_len = 3
 
@@ -98,6 +99,13 @@ def restorehiddenword(w, d):
     return w
 
 
+def notdigits(s):
+    for i in s:
+        if not str(i).isdigit():
+            return True
+    return False
+
+
 def tokenize(s):
     s = s.lower()
 
@@ -149,13 +157,16 @@ def tokenize(s):
 
     s = s.replace('-', ' ')
     s = s.replace('.', ' ')
+    s = s.replace('&', ' ')
+    s = s.replace('&amp;', ' ')
     return [restorehiddenword(w, d) for w in word_tokenize(s) if w not in stop_words]
 
 
 for line in sys.stdin:
-    ws = tokenize(line)
+    ows = tokenize(line)
+    ws = ows[1:]
     l = len(ws)
     for i in range(0, l):
         for j in range(2, phrase_len+1):
-            if i+j <= l:
-                print ';'.join(ws[i:i+j])
+            if i+j <= l and notdigits(ws[i:i+j]):
+                print ';'.join(ws[i:i+j]) + "\t" + ows[0]
