@@ -1,9 +1,11 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
 
 d = {}
 c = {}
 
+threshold = 2000
 showcasenumber = 0
 
 for line in sys.stdin:
@@ -14,7 +16,7 @@ for line in sys.stdin:
     c[w[0]].append(w[1])
 
 for k in d.keys():
-    if d[k] > 200:
+    if d[k] > threshold:
         if showcasenumber == 1:
             print k.replace(';', ' ').replace('\n', '') + "\t" + str(d[k]) + "\t" + ";".join(c[k]).replace('\n', '')
         else:

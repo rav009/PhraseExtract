@@ -3,7 +3,8 @@
 import sys
 import re
 import uuid
-from nltk.tokenize import word_tokenize
+import nltk
+
 
 stop_words = [u'mailto', u'i', u'me', u'my', u'myself', u'we', u'our', u'ours', u'ourselves', u'you', u"you're",
               u"you've", u"you'll", u"you'd", u'your', u'yours', u'yourself', u'yourselves', u'he', u'him', u'his',
@@ -108,6 +109,16 @@ def notdigits(s):
     return False
 
 
+def read_stopsentences():
+    rs = []
+    try:
+        with open('part-00000', 'r') as f:
+            rs.append(f.readline())
+    except Exception as e:
+        print >> sys.stderr, str(e)
+    return rs
+
+
 def tokenize(s):
     s = s.lower()
 
@@ -162,11 +173,22 @@ def tokenize(s):
     s = s.replace('-', ' ')
     s = s.replace('.', ' ')
     s = s.replace('&', ' ')
-    rs = [restorehiddenword(w, d) for w in word_tokenize(s)]
+
+    try:
+        from nltk.tokenize import word_tokenize
+        rs = [restorehiddenword(w, d) for w in word_tokenize(s)]
+    except Exception as e:
+        print >> sys.stderr, "NLTK TOKENIZE ERROR:"+str(e)
+        exit(777)
+
     return [w for w in rs if w not in stop_words]
 
 
+stop_sentences = read_stopsentences()
+nltk.data.path.append("/home/rav009/nltk_data/")
 for line in sys.stdin:
+    for s in stop_sentences:
+        line = line.replace(s, " ")
     ows = tokenize(line)
     ws = ows[1:]
     l = len(ws)
