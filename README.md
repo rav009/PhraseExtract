@@ -11,6 +11,8 @@
 	-mapper sentence_mapper.py \
 	-reducer sentence_reducer.py`
 
+
+
 - Use the following command to search the frequently occurring phrases which contains 2 or 3 words:
 
 `hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.8.0.jar \
