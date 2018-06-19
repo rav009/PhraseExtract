@@ -9,8 +9,8 @@ hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.8.0.jar \
 	-D mapred.reduce.tasks=3 \
 	-input /input/text.txt \
 	-output /sentences/above100/ \
-	-mapper sentence_mapper.py \
-	-reducer sentence_reducer.py
+	-mapper "python sentence_mapper.py" \
+	-reducer "python sentence_reducer.py"
 ```
 
 
@@ -25,5 +25,5 @@ hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.8.0.jar \
 	-input /input/text.txt \
 	-output /phrase/above2000 \
 	-mapper "python phrase_mapper.py" \
-	-reducer "phrase_reducer.py"
+	-reducer "python phrase_reducer.py"
 ```
