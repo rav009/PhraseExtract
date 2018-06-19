@@ -4,6 +4,7 @@ import sys
 import re
 import uuid
 import nltk
+import getopt
 
 
 stop_words = [u'mailto', u'i', u'me', u'my', u'myself', u'we', u'our', u'ours', u'ourselves', u'you', u"you're",
@@ -28,8 +29,6 @@ stop_words = [u'mailto', u'i', u'me', u'my', u'myself', u'we', u'our', u'ours', 
               u"sorry", u"please", u"via", u"iphone", u"email", u"thursday", u"wednesday", u"month", u"week", u"europe",
               u"monday", u"sent", u"best", u"hi", u"okay", u"let", u"would", u"e-mail", u"http", u"get", u"per",
               u"elekta", u"support", u"uk", u"ip", u"march", u"england"]
-
-phrase_len = 3
 
 
 def genuuid():
@@ -179,20 +178,30 @@ def tokenize(s):
         rs = [restorehiddenword(w, d) for w in word_tokenize(s)]
     except Exception as e:
         print >> sys.stderr, "NLTK TOKENIZE ERROR:"+str(e)
-        exit(777)
+        exit(-1)
 
     return [w for w in rs if w not in stop_words]
 
 
-stop_sentences = read_stopsentences()
-nltk.data.path.append("/home/rav009/nltk_data/")
-for line in sys.stdin:
-    for s in stop_sentences:
-        line = line.replace(s, " ")
-    ows = tokenize(line)
-    ws = ows[1:]
-    l = len(ws)
-    for i in range(0, l):
-        for j in range(2, phrase_len+1):
-            if i+j <= l and notdigits(ws[i:i+j]):
-                print ';'.join(ws[i:i+j]) + "\t" + ows[0]
+if __name__ == "__main__":
+    stop_sentences = read_stopsentences()
+    nltk.data.path.append("/home/rav009/nltk_data/")
+    phrase_len = 3
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "l:")
+        if len(opts) == 1:
+            phrase_len = int(opts[0][1])
+    except getopt.GetoptError:
+        print "Command line arguments error."
+        sys.exit(-2)
+
+    for line in sys.stdin:
+        for s in stop_sentences:
+            line = line.replace(s, " ")
+        ows = tokenize(line)
+        ws = ows[1:]
+        l = len(ws)
+        for i in range(0, l):
+            for j in range(2, phrase_len+1):
+                if i+j <= l and notdigits(ws[i:i+j]):
+                    print ';'.join(ws[i:i+j]) + "\t" + ows[0]
