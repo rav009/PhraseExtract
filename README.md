@@ -14,12 +14,10 @@ hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.8.0.jar \
 ```
 
 `python sentence_reducer.py -t 100` stands for output all the sentence appears for more than 100 times.
-
-  
-  
-  
-  
-
+<br />
+<br />
+<br />
+<br />
 - Use the following command to search the frequently occurring phrases which contains 2 or 3 words:
 
 ```
