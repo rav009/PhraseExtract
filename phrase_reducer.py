@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     for k in d.keys():
         if d[k] > threshold:
-            if showcasenumber == 1:
+            if showcasenumber:
                 print k.replace(';', ' ').replace('\n', '') + "\t" + str(d[k]) + "\t" + ";".join(c[k]).replace('\n', '')
             else:
                 print k.replace(';', ' ').replace('\n', '') + "\t" + str(d[k])
