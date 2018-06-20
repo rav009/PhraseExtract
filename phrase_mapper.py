@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sys
@@ -111,7 +112,7 @@ def notdigits(s):
 def read_stopsentences():
     rs = []
     try:
-        with open('part-00000', 'r') as f:
+        with open('whole', 'r') as f:
             rs.append(f.readline())
     except Exception as e:
         print >> sys.stderr, str(e)
