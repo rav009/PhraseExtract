@@ -12,7 +12,28 @@ yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
 ```
 
 `python sentence_reducer.py -t 100` stands for output all the sentence appears for more than 100 times.
+-more emamples:
+``` 
+yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
+	-files /home/rav009/PhraseExtract/sentence_mapper.py,/home/rav009/PhraseExtract/sentence_reducer.py \
+	-D mapred.map.tasks=4 \
+	-D mapred.reduce.tasks=4 \
+	-input adl:///input.txt \
+	-output /sentences/above100/ \
+	-mapper "python sentence_mapper.py" \
+	-reducer "python sentence_reducer.py -t 100"
+```
 <br />
+``` 
+yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
+	-files /home/rav009/PhraseExtract/sentence_mapper.py,/home/rav009/PhraseExtract/sentence_reducer.py \
+	-D mapred.map.tasks=4 \
+	-D mapred.reduce.tasks=4 \
+	-input adl:///input.txt \
+	-output /sentences/above10/ \
+	-mapper "python sentence_mapper.py" \
+	-reducer "python sentence_reducer.py -t 10"
+```
 <br />
 <br />
 <br />
