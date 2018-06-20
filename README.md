@@ -23,7 +23,6 @@ yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
 	-mapper "python sentence_mapper.py" \
 	-reducer "python sentence_reducer.py -t 100"
 ```
-<br />
 ``` 
 yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
 	-files /home/rav009/PhraseExtract/sentence_mapper.py,/home/rav009/PhraseExtract/sentence_reducer.py \
