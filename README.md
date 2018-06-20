@@ -1,7 +1,7 @@
 # PhraseExtract 
 - Use the following command to search the frequently occurring sentences(the generic options like -files and -D show be placed before the command options): 
 ``` 
-hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.8.0.jar \
+hadoop jar /usr/hdp/2.6.3.2-14/hadoop-mapreduce/hadoop-streaming.jar \
 	-files /home/rav009/PhraseExtract/sentence_mapper.py,/home/rav009/PhraseExtract/sentence_reducer.py \
 	-D mapred.map.tasks=7 \
 	-D mapred.reduce.tasks=3 \
@@ -19,7 +19,7 @@ hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.8.0.jar \
 - Use the following command to search the frequently occurring phrases which contains 2 or 3 words:
 
 ```
-hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.8.0.jar \
+hadoop jar /usr/hdp/2.6.3.2-14/hadoop-mapreduce/hadoop-streaming.jar \
 	-files /home/rav009/PhraseExtract/phrase_mapper.py,/home/rav009/PhraseExtract/phrase_reducer.py,hdfs://127.0.0.1:9000/sentences/above100/part-00000 \
 	-D mapred.map.tasks=7 \
 	-D mapred.reduce.tasks=3 \
