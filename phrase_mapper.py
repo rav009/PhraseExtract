@@ -190,8 +190,9 @@ if __name__ == "__main__":
     phrase_len = 3
     try:
         opts, args = getopt.getopt(sys.argv[1:], "l:")
-        if len(opts) == 1:
-            phrase_len = int(opts[0][1])
+        for c, v in opts:
+            if c == "-l":
+                phrase_len = int(v)
     except getopt.GetoptError:
         print "Command line arguments error."
         sys.exit(-2)
