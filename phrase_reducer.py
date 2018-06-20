@@ -15,9 +15,9 @@ if __name__ == "__main__":
     try:
         opts, args = getopt.getopt(sys.argv[1:], "t:c")
         for c, v in opts:
-            if c == "t":
+            if c == "-t":
                 threshold = int(v)
-            if c == "c":
+            if c == "-c":
                 showcasenumber = True
     except getopt.GetoptError:
         print "Command line arguments error."
