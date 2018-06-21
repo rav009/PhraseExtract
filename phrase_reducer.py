@@ -4,6 +4,11 @@ import sys
 import getopt
 
 
+def log(err):
+    with open("/tmp/phrase_mapper.log", "a+") as f:
+        f.write(str(err) + "\n")
+        
+
 if __name__ == "__main__":
     threshold = 2000
     showcasenumber = False
@@ -19,11 +24,14 @@ if __name__ == "__main__":
             if c == "-c":
                 showcasenumber = True
     except getopt.GetoptError:
-        print "Command line arguments error."
+        log("Wrong arguments!")
         sys.exit(-2)
 
     for line in sys.stdin:
         w = line.split("\t")
+        if not w[1].isdigit():
+            log("Case number is not digits.")
+            sys.exit(-2)
         if last_phrase == w[0]:
             c += 1
             if showcasenumber:
