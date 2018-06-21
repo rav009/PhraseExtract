@@ -121,17 +121,14 @@ def notdigits(s):
 
 def read_stopsentences():
     rs = []
-    try:
-        with open('whole', 'r') as f:
-            rs.append(f.readline())
-    except Exception as e:
-        print >> sys.stderr, str(e)
+    with open('whole', 'r') as f:
+        rs = f.readlines()
     return rs
 
 
 def tokenize(s):
     s = s.lower()
-    s = s.replace("\n", " ")
+    s = s.replace("\\n", " ")
 
     otherwordsregex = r"[^\s\w:\+\-,\?\{\}\[\]\>\<@\$\.\(\)\#/\|'\"!&*;=~%\^]+"
     s = re.sub(otherwordsregex, ' ', s)
@@ -201,14 +198,17 @@ if __name__ == "__main__":
             if c == "-l":
                 phrase_len = int(v)
         for line in sys.stdin:
+            begin = line.find("|")
+            casenumber = line[0:begin]
+            line = line[begin:]
+            line = line.replace("\\n", " ")
             for s in stop_sentences:
-                line = line.replace(s, " ")
+                line = line.replace(s.strip(), " ")
             ows = tokenize(line)
-            ws = ows[1:]
-            l = len(ws)
+            l = len(ows)
             for i in range(0, l):
                 for j in range(2, phrase_len+1):
-                    if i+j <= l and notdigits(ws[i:i+j]):
-                        print ';'.join(ws[i:i+j]) + "\t" + ows[0]
+                    if i+j <= l and notdigits(ows[i:i+j]):
+                        print ';'.join(ows[i:i+j]) + "\t" + casenumber
     except Exception as err:
         log(err)
