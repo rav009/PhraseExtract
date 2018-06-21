@@ -7,7 +7,7 @@ import getopt
 def log(err):
     with open("/tmp/phrase_mapper.log", "a+") as f:
         f.write(str(err) + "\n")
-        
+
 
 if __name__ == "__main__":
     threshold = 2000
