@@ -40,13 +40,15 @@ yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
 
 ```
 yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
-	-files /home/rav009/PhraseExtract/phrase_mapper.py,/home/rav009/PhraseExtract/phrase_reducer.py,hdfs://namenode/sentences/above30/whole \
+	-files /home/rav009/PhraseExtract/phrase_mapper.py,/home/rav009/PhraseExtract/phrase_reducer.py,hdfs://namenode/sentences/above10/whole \
 	-D mapred.map.tasks=4 \
 	-D mapred.reduce.tasks=4 \
-	-input hdfs:///namenode/input.txt \
-	-output /phrase/above10000 \
+	-D mapred.text.key.partitioner.options=-k1 \
+	-input hdfs://namenode/input.txt \
+	-output /phrase/above2000 \
 	-mapper "python phrase_mapper.py -l 3" \
-	-reducer "python phrase_reducer.py -t 10000 -c"
+	-reducer "python phrase_reducer.py -t 2000 -c" \
+	-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner
 ```
 
 `python phrase_mapper.py -l 3` stands for generate the phrases contain less than or equal to 3 words.  
