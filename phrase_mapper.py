@@ -3,8 +3,8 @@
 
 
 def log(err):
-    with open("/tmp/phrase_mapper.log","a+") as f:
-        f.writelines(str(err))
+    with open("/tmp/phrase_mapper.log", "a+") as f:
+        f.write(str(err) + "\n")
 
 
 try:
