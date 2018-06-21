@@ -39,14 +39,14 @@ yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
 - Use the following command to search the frequently occurring phrases which contains 2 or 3 words:
 
 ```
-hadoop jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
-	-files /home/rav009/PhraseExtract/phrase_mapper.py,/home/rav009/PhraseExtract/phrase_reducer.py,adl:///sentences/above100/part-00000 \
-	-D mapred.map.tasks=7 \
-	-D mapred.reduce.tasks=3 \
-	-input /input/text.txt \
-	-output /phrase/above2000 \
+yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
+	-files /home/rav009/PhraseExtract/phrase_mapper.py,/home/rav009/PhraseExtract/phrase_reducer.py,hdfs://namenode/sentences/above30/whole \
+	-D mapred.map.tasks=4 \
+	-D mapred.reduce.tasks=4 \
+	-input hdfs:///namenode/input.txt \
+	-output /phrase/above10000 \
 	-mapper "python phrase_mapper.py -l 3" \
-	-reducer "python phrase_reducer.py -t 2000 -c"
+	-reducer "python phrase_reducer.py -t 10000 -c"
 ```
 
 `python phrase_mapper.py -l 3` stands for generate the phrases contain less than or equal to 3 words.  
