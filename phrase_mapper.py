@@ -131,6 +131,7 @@ def read_stopsentences():
 
 def tokenize(s):
     s = s.lower()
+    s = s.replace("\n", " ")
 
     otherwordsregex = r"[^\s\w:\+\-,\?\{\}\[\]\>\<@\$\.\(\)\#/\|'\"!&*;=~%\^]+"
     s = re.sub(otherwordsregex, ' ', s)
