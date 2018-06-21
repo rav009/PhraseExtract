@@ -1,11 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-import re
-import uuid
-import nltk
-import getopt
+
+def log(err):
+    with open("/tmp/phrase_mapper.log","a+") as f:
+        f.writelines(str(err))
+
+
+try:
+    log("[Info] Begin to import libraries")
+    import sys
+    import re
+    import uuid
+    import nltk
+    import getopt
+except Exception as err:
+    log(err)
 
 
 stop_words = [u'mailto', u'i', u'me', u'my', u'myself', u'we', u'our', u'ours', u'ourselves', u'you', u"you're",
@@ -174,19 +184,10 @@ def tokenize(s):
     s = s.replace('.', ' ')
     s = s.replace('&', ' ')
 
-    try:
-        from nltk.tokenize import word_tokenize
-        rs = [restorehiddenword(w, d) for w in word_tokenize(s)]
-    except Exception as e:
-        print >> sys.stderr, "NLTK TOKENIZE ERROR:"+str(e)
-        exit(-1)
+    from nltk.tokenize import word_tokenize
+    rs = [restorehiddenword(w, d) for w in word_tokenize(s)]
 
     return [w for w in rs if w not in stop_words]
-
-
-def log(err):
-    with open("/tmp/phrase_mapper.log","a+") as f:
-        f.writelines(str(err))
 
 
 if __name__ == "__main__":
