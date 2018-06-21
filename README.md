@@ -1,28 +1,46 @@
-# PhraseExtract
-
-- Use the following command to search the frequently occurring sentences(the generic options like -files and -D show be placed before the command options):
-
+# PhraseExtract 
+- Use the following command to search the frequently occurring sentences(the generic options like -files and -D show be placed before the command options): 
+``` 
+yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
+	-files /home/rav009/PhraseExtract/sentence_mapper.py,/home/rav009/PhraseExtract/sentence_reducer.py \
+	-D mapred.map.tasks=4 \
+	-D mapred.reduce.tasks=4 \
+	-input adl:///input.txt \
+	-output /sentences/above30/ \
+	-mapper "python sentence_mapper.py" \
+	-reducer "python sentence_reducer.py -t 30"
 ```
-hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.8.0.jar \
-	-files /home/rav009/PycharmProjects/untitled/PhraseExtract/sentence_mapper.py,/home/rav009/PycharmProjects/untitled/PhraseExtract/sentence_reducer.py \
-	-D mapred.map.tasks=7 \
-	-D mapred.reduce.tasks=3 \
-	-input /input/text.txt \
+
+`python sentence_reducer.py -t 100` stands for output all the sentence appears for more than 100 times.
+-more emamples:
+``` 
+yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
+	-files /home/rav009/PhraseExtract/sentence_mapper.py,/home/rav009/PhraseExtract/sentence_reducer.py \
+	-D mapred.map.tasks=4 \
+	-D mapred.reduce.tasks=4 \
+	-input adl:///input.txt \
 	-output /sentences/above100/ \
 	-mapper "python sentence_mapper.py" \
 	-reducer "python sentence_reducer.py -t 100"
 ```
-
-`python sentence_reducer.py -t 100` stands for output all the sentence appears for more than 100 times.
-<br />
+``` 
+yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
+	-files /home/rav009/PhraseExtract/sentence_mapper.py,/home/rav009/PhraseExtract/sentence_reducer.py \
+	-D mapred.map.tasks=4 \
+	-D mapred.reduce.tasks=4 \
+	-input adl:///input.txt \
+	-output /sentences/above10/ \
+	-mapper "python sentence_mapper.py" \
+	-reducer "python sentence_reducer.py -t 10"
+```
 <br />
 <br />
 <br />
 - Use the following command to search the frequently occurring phrases which contains 2 or 3 words:
 
 ```
-hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.8.0.jar \
-	-files /home/rav009/PycharmProjects/untitled/PhraseExtract/phrase_mapper.py,/home/rav009/PycharmProjects/untitled/PhraseExtract/phrase_reducer.py,hdfs://127.0.0.1:9000/sentences/above100/part-00000 \
+hadoop jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
+	-files /home/rav009/PhraseExtract/phrase_mapper.py,/home/rav009/PhraseExtract/phrase_reducer.py,adl:///sentences/above100/part-00000 \
 	-D mapred.map.tasks=7 \
 	-D mapred.reduce.tasks=3 \
 	-input /input/text.txt \
