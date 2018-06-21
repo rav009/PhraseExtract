@@ -184,26 +184,29 @@ def tokenize(s):
     return [w for w in rs if w not in stop_words]
 
 
+def log(err):
+    with open("/tmp/phrase_mapper.log","a+") as f:
+        f.writelines(str(err))
+
+
 if __name__ == "__main__":
-    stop_sentences = read_stopsentences()
-    nltk.data.path.append("/home/rav009/nltk_data/")
-    phrase_len = 3
     try:
+        stop_sentences = read_stopsentences()
+        nltk.data.path.append("/home/rav009/nltk_data/")
+        phrase_len = 3
         opts, args = getopt.getopt(sys.argv[1:], "l:")
         for c, v in opts:
             if c == "-l":
                 phrase_len = int(v)
-    except getopt.GetoptError:
-        print "Command line arguments error."
-        sys.exit(-2)
-
-    for line in sys.stdin:
-        for s in stop_sentences:
-            line = line.replace(s, " ")
-        ows = tokenize(line)
-        ws = ows[1:]
-        l = len(ws)
-        for i in range(0, l):
-            for j in range(2, phrase_len+1):
-                if i+j <= l and notdigits(ws[i:i+j]):
-                    print ';'.join(ws[i:i+j]) + "\t" + ows[0]
+        for line in sys.stdin:
+            for s in stop_sentences:
+                line = line.replace(s, " ")
+            ows = tokenize(line)
+            ws = ows[1:]
+            l = len(ws)
+            for i in range(0, l):
+                for j in range(2, phrase_len+1):
+                    if i+j <= l and notdigits(ws[i:i+j]):
+                        print ';'.join(ws[i:i+j]) + "\t" + ows[0]
+    except Exception as err:
+        log(err)
