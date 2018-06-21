@@ -5,12 +5,11 @@ import getopt
 
 
 if __name__ == "__main__":
-
-    d = {}
-    c = {}
-
     threshold = 2000
     showcasenumber = False
+    last_phrase = ""
+    c = 0
+    casenumbers = []
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "t:c")
@@ -25,14 +24,16 @@ if __name__ == "__main__":
 
     for line in sys.stdin:
         w = line.split("\t")
-        d.setdefault(w[0], 0)
-        d[w[0]] = d[w[0]] + 1
-        c.setdefault(w[0], [])
-        c[w[0]].append(w[1])
-
-    for k in d.keys():
-        if d[k] > threshold:
+        if last_phrase == w[0]:
+            c += 1
             if showcasenumber:
-                print k.replace(';', ' ').replace('\n', '') + "\t" + str(d[k]) + "\t" + ";".join(c[k]).replace('\n', '')
-            else:
-                print k.replace(';', ' ').replace('\n', '') + "\t" + str(d[k])
+                casenumbers.add(w[1])
+        else:
+            if c > threshold:
+                if showcasenumber:
+                    print last_phrase .replace(';', ' ').replace('\n', '') + "\t" + str(c) + "\t" + ";".join(casenumbers).replace('\n', '')
+                else:
+                    print last_phrase.replace(';', ' ').replace('\n', '') + "\t" + str(c) + "\t"
+            last_phrase = w[0]
+            casenumbers = []
+            c = 1
