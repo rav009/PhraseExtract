@@ -29,13 +29,14 @@ if __name__ == "__main__":
 
     for line in sys.stdin:
         w = line.split("\t")
-        if not w[1].isdigit():
-            log("Case number is not digits.")
+        if not w[1].strip().isdigit():
+            log(w[1]+": Case number is not digits.")
             sys.exit(-2)
         if last_phrase == w[0]:
             c += 1
             if showcasenumber:
-                casenumbers.add(w[1])
+                if w[1].strip() not in casenumbers:
+                    casenumbers.add(w[1].strip())
         else:
             if c > threshold:
                 if showcasenumber:
