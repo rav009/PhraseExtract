@@ -29,9 +29,9 @@ if __name__ == "__main__":
 
     for line in sys.stdin:
         w = line.split("\t")
-        if not w[1].strip().isdigit():
-            log(w[1]+": Case number is not digits.")
-            sys.exit(-2)
+        if len(w) != 2 or not w[1].strip().isdigit():
+            log(line + ": Error Line!")
+            continue
         if last_phrase == w[0]:
             c += 1
             if showcasenumber:
