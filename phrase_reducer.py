@@ -5,7 +5,7 @@ import getopt
 
 
 def log(err):
-    with open("/tmp/phrase_mapper.log", "a+") as f:
+    with open("/tmp/phrase_reducer.log", "a+") as f:
         f.write(str(err) + "\n")
 
 
