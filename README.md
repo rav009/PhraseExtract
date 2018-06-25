@@ -1,5 +1,5 @@
 # PhraseExtract
-
+- The master branch is the prototype. For more details, please reference the azure_hdinsight branch.
 - Use the following command to search the frequently occurring sentences(the generic options like -files and -D show be placed before the command options):
 
 ```
@@ -23,12 +23,14 @@ hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.8.0.jar \
 ```
 hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.8.0.jar \
 	-files /home/rav009/PycharmProjects/untitled/PhraseExtract/phrase_mapper.py,/home/rav009/PycharmProjects/untitled/PhraseExtract/phrase_reducer.py,hdfs://127.0.0.1:9000/sentences/above100/part-00000 \
-	-D mapred.map.tasks=7 \
-	-D mapred.reduce.tasks=3 \
-	-input /input/text.txt \
+	-D mapred.map.tasks=4 \
+	-D mapred.reduce.tasks=4 \
+	-D mapred.text.key.partitioner.options=-k1 \
+	-input hdfs://namenode/input.txt \
 	-output /phrase/above2000 \
 	-mapper "python phrase_mapper.py -l 3" \
-	-reducer "python phrase_reducer.py -t 2000 -c"
+	-reducer "python phrase_reducer.py -t 2000 -c" \
+	-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner
 ```
 
 `python phrase_mapper.py -l 3` stands for generate the phrases contain less than or equal to 3 words.  
