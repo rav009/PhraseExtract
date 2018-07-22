@@ -123,6 +123,9 @@ def read_stopsentences():
 def tokenize(s):
     s = s.lower()
 
+    otherwordsregex = r"[^\s\w:\+\-,\?\{\}\[\]\>\<@\$\.\(\)\#/\|'\"!&*;=~%\^]+" # remove non-English charactor
+    s = re.sub(otherwordsregex, ' ', s)
+
     # recognize&hide email
     s, edict = hideemail(s)
 
@@ -140,14 +143,42 @@ def tokenize(s):
     d.update(ipdict)
     d.update(udict)
 
-    otherwordsregex = r"[^\s\w:\+\-,\?\{\}\[\]\>\<@\$\.\(\)\#/\|'\"!&*;=~%\^]+"
-    s = re.sub(otherwordsregex, ' ', s)
     s = s.replace('&amp;', ' ')
     s = s.replace('&gt;', ' ')
     s = s.replace('&lt;', ' ')
+    s = s.replace(';', ' ')
+    s = s.replace('+', ' ')
+    s = s.replace('<', ' ')
+    s = s.replace('>', ' ')
+    s = s.replace(':', ' ')
+    s = s.replace('[', ' ')
+    s = s.replace(']', ' ')
+    s = s.replace('{', ' ')
+    s = s.replace('}', ' ')
+    s = s.replace('(', ' ')
+    s = s.replace(')', ' ')
+    # s = s.replace('/', ' ')
+    s = s.replace('?', ' ')
+    s = s.replace('*', ' ')
+    s = s.replace(',', ' ')
+    s = s.replace('\'s', ' ')
+    s = s.replace('\'', ' ')
+    s = s.replace('"', ' ')
+    s = s.replace('|', ' ')
+    s = s.replace('#', ' ')
+    s = s.replace('__', ' ')
+    s = s.replace(' _ ', ' ')
+    s = s.replace(' = ', ' ')
+    s = s.replace('!', ' ')
+    s = s.replace('@', ' ')
 
-    rs = [restorehiddenword(w, d) for w in s.split(" ")]
-    return [w for w in rs if w not in stop_words]
+    s = s.replace('-', ' ')
+    s = s.replace('.', ' ')
+    s = s.replace('&', ' ')
+
+    from nltk.tokenize import word_tokenize
+    rs = [restorehiddenword(w, d) for w in word_tokenize(s)]
+    return [w.strip() for w in rs if w not in stop_words]
 
 
 def generatePhrase(c):
@@ -156,15 +187,16 @@ def generatePhrase(c):
     for i in range(0, length):
         for j in range(2, 3 + 1):
             if i + j <= length:
-                rs.append(' '.join(c[i:i + j]))
+                rs.append((' '.join(c[i:i + j])).strip())
     return rs
 
 
 if __name__ == "__main__":
     conf = SparkConf().setAppName("case_analytics")
     sc = SparkContext(conf=conf)
+    sc.setLogLevel(logLevel="WARN")
     # adl://intellimax.azuredatalakestore.net/input.txt
-    RDD = sc.textFile("adl://intellimax.azuredatalakestore.net/input.txt", 10)\
+    RDD = sc.textFile("/home/rav009/PycharmProjects/PhraseExtract/Spark/testtext", 10)\
         .map(lambda x: [i for i in x.split("|") if i.strip() is not u''])\
         .map(lambda x: (x[0], '\\n'.join(x[1:])))\
         .persist()
@@ -184,19 +216,21 @@ if __name__ == "__main__":
         .reduceByKey(lambda x, y: x+y)\
         .map(lambda x: (x[0][0], x[0][1], x[1]))
 
-    sparksession = SparkSession.builder\
-        .appName("cases")\
-        .master("yarn-client")\
-        .enableHiveSupport()\
-        .getOrCreate()
+    print phraseRDD.take(100)
 
-    schema = StructType([
-        StructField("phrase", StringType(), False),
-        StructField("caseID", StringType(), False),
-        StructField("num", IntegerType(), False)
-    ])
-    df = sparksession.createDataFrame(phraseRDD, schema).toDF()
-    df.write.saveAsTable("case phrase", format= "orc", mode= "overwrite")
+    #sparksession = SparkSession.builder\
+    #    .appName("cases")\
+    #    .master("yarn-client")\
+    #    .enableHiveSupport()\
+    #    .getOrCreate()
+#
+    #schema = StructType([
+    #    StructField("phrase", StringType(), False),
+    #    StructField("caseID", StringType(), False),
+    #    StructField("num", IntegerType(), False)
+    #])
+    #df = sparksession.createDataFrame(phraseRDD, schema).toDF()
+    #df.write.saveAsTable("case phrase", format= "orc", mode= "overwrite")
 
 
 
