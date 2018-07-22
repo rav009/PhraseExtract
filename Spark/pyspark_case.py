@@ -6,6 +6,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 import uuid
 import re
+import nltk
 
 
 def removeStopSentences(c):
@@ -120,65 +121,67 @@ def read_stopsentences():
     return rs
 
 
-def tokenize(s):
-    s = s.lower()
-
-    otherwordsregex = r"[^\s\w:\+\-,\?\{\}\[\]\>\<@\$\.\(\)\#/\|'\"!&*;=~%\^]+" # remove non-English charactor
-    s = re.sub(otherwordsregex, ' ', s)
-
-    # recognize&hide email
-    s, edict = hideemail(s)
-
-    # recognize hyphen
-    s, hdict = hidehyphen(s)
-
-    # recognize ip
-    s, ipdict = hideip(s)
-
-    # recognize url
-    s, udict = hideurl(s)
-
-    d = edict.copy()
-    d.update(hdict)
-    d.update(ipdict)
-    d.update(udict)
-
-    s = s.replace('&amp;', ' ')
-    s = s.replace('&gt;', ' ')
-    s = s.replace('&lt;', ' ')
-    s = s.replace(';', ' ')
-    s = s.replace('+', ' ')
-    s = s.replace('<', ' ')
-    s = s.replace('>', ' ')
-    s = s.replace(':', ' ')
-    s = s.replace('[', ' ')
-    s = s.replace(']', ' ')
-    s = s.replace('{', ' ')
-    s = s.replace('}', ' ')
-    s = s.replace('(', ' ')
-    s = s.replace(')', ' ')
-    # s = s.replace('/', ' ')
-    s = s.replace('?', ' ')
-    s = s.replace('*', ' ')
-    s = s.replace(',', ' ')
-    s = s.replace('\'s', ' ')
-    s = s.replace('\'', ' ')
-    s = s.replace('"', ' ')
-    s = s.replace('|', ' ')
-    s = s.replace('#', ' ')
-    s = s.replace('__', ' ')
-    s = s.replace(' _ ', ' ')
-    s = s.replace(' = ', ' ')
-    s = s.replace('!', ' ')
-    s = s.replace('@', ' ')
-
-    s = s.replace('-', ' ')
-    s = s.replace('.', ' ')
-    s = s.replace('&', ' ')
-
+def rowsTokenize(rows):
+    nltk.data.path.append("/home/rav009/nltk_data/")
     from nltk.tokenize import word_tokenize
-    rs = [restorehiddenword(w, d) for w in word_tokenize(s)]
-    return [w.strip() for w in rs if w not in stop_words]
+    otherwordsregex = r"[^\s\w:\+\-,\?\{\}\[\]\>\<@\$\.\(\)\#/\|'\"!&*;=~%\^]+"  # remove non-English charactor
+    for r in rows:
+        s = r[1].lower()
+
+        s = re.sub(otherwordsregex, ' ', s)
+
+        # recognize&hide email
+        s, edict = hideemail(s)
+
+        # recognize hyphen
+        s, hdict = hidehyphen(s)
+
+        # recognize ip
+        s, ipdict = hideip(s)
+
+        # recognize url
+        s, udict = hideurl(s)
+
+        d = edict.copy()
+        d.update(hdict)
+        d.update(ipdict)
+        d.update(udict)
+
+        s = s.replace('&amp;', ' ')
+        s = s.replace('&gt;', ' ')
+        s = s.replace('&lt;', ' ')
+        s = s.replace(';', ' ')
+        s = s.replace('+', ' ')
+        s = s.replace('<', ' ')
+        s = s.replace('>', ' ')
+        s = s.replace(':', ' ')
+        s = s.replace('[', ' ')
+        s = s.replace(']', ' ')
+        s = s.replace('{', ' ')
+        s = s.replace('}', ' ')
+        s = s.replace('(', ' ')
+        s = s.replace(')', ' ')
+        # s = s.replace('/', ' ')
+        s = s.replace('?', ' ')
+        s = s.replace('*', ' ')
+        s = s.replace(',', ' ')
+        s = s.replace('\'s', ' ')
+        s = s.replace('\'', ' ')
+        s = s.replace('"', ' ')
+        s = s.replace('|', ' ')
+        s = s.replace('#', ' ')
+        s = s.replace('__', ' ')
+        s = s.replace(' _ ', ' ')
+        s = s.replace(' = ', ' ')
+        s = s.replace('!', ' ')
+        s = s.replace('@', ' ')
+
+        s = s.replace('-', ' ')
+        s = s.replace('.', ' ')
+        s = s.replace('&', ' ')
+
+        rs = [restorehiddenword(w, d) for w in word_tokenize(s)]
+        yield r[0], [w.strip() for w in rs if w not in stop_words]
 
 
 def generatePhrase(c):
@@ -209,7 +212,7 @@ if __name__ == "__main__":
     #print stop_sentences.value
 
     phraseRDD = RDD.mapPartitions(lambda x: removeStopSentences(x))\
-        .map(lambda x: (x[0], tokenize(x[1])))\
+        .mapPartitions(lambda x: rowsTokenize(x))\
         .map(lambda x: (x[0], generatePhrase(x[1])))\
         .flatMapValues(lambda x: x)\
         .map(lambda x: ((x[1], x[0]), 1))\
@@ -218,19 +221,19 @@ if __name__ == "__main__":
 
     print phraseRDD.take(100)
 
-    #sparksession = SparkSession.builder\
-    #    .appName("cases")\
-    #    .master("yarn-client")\
-    #    .enableHiveSupport()\
-    #    .getOrCreate()
+    sparksession = SparkSession.builder\
+        .appName("cases")\
+        .master("yarn-client")\
+        .enableHiveSupport()\
+        .getOrCreate()
 #
-    #schema = StructType([
-    #    StructField("phrase", StringType(), False),
-    #    StructField("caseID", StringType(), False),
-    #    StructField("num", IntegerType(), False)
-    #])
-    #df = sparksession.createDataFrame(phraseRDD, schema).toDF()
-    #df.write.saveAsTable("case phrase", format= "orc", mode= "overwrite")
+    schema = StructType([
+        StructField("phrase", StringType(), False),
+        StructField("caseID", StringType(), False),
+        StructField("num", IntegerType(), False)
+    ])
+    df = sparksession.createDataFrame(phraseRDD, schema)
+    df.write.saveAsTable("case_phrase", format="orc", mode="overwrite")
 
 
 
