@@ -199,7 +199,7 @@ if __name__ == "__main__":
     sc = SparkContext(conf=conf)
     sc.setLogLevel(logLevel="WARN")
     # adl://intellimax.azuredatalakestore.net/input.txt
-    RDD = sc.textFile("/home/rav009/PycharmProjects/PhraseExtract/Spark/testtext", 10)\
+    RDD = sc.textFile("adl://intellimax.azuredatalakestore.net/input.txt", 10)\
         .map(lambda x: [i for i in x.split("|") if i.strip() is not u''])\
         .map(lambda x: (x[0], '\\n'.join(x[1:])))\
         .persist()
