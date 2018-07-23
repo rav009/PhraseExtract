@@ -226,7 +226,7 @@ if __name__ == "__main__":
         .master("yarn-client")\
         .enableHiveSupport()\
         .getOrCreate()
-#
+
     schema = StructType([
         StructField("phrase", StringType(), False),
         StructField("caseID", StringType(), False),
