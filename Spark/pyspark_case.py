@@ -219,7 +219,7 @@ if __name__ == "__main__":
         .reduceByKey(lambda x, y: x+y)\
         .map(lambda x: (x[0][0], x[0][1], x[1]))
 
-    #print phraseRDD.take(100)
+    print "Ready to write the table!"
 
     sparksession = SparkSession.builder\
         .appName("cases")\
