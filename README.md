@@ -53,3 +53,12 @@ yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
 
 `python phrase_mapper.py -l 3` stands for generate the phrases contain less than or equal to 3 words.  
 `python phrase_reducer.py -t 2000 -c` stands the threshold of frequency of phrase is 2000 and also output the ID number of each passage(assume the ID and the content is split by '|').
+
+- Spark submit command
+```
+spark-submit --master yarn --deploy-mode client \
+--driver-java-options "-Dlog4j.configuration=log4j.properties" \
+--num-executors 10 \
+--executor-memory 2G \
+pyspark_case.py
+```
