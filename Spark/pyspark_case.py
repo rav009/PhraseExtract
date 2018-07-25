@@ -233,7 +233,7 @@ if __name__ == "__main__":
         StructField("num", IntegerType(), False)
     ])
     df = sparksession.createDataFrame(phraseRDD, schema)
-    df.write.partitionBy('caseID').saveAsTable("case_phrase", format="orc", mode="overwrite")
+    df.write.saveAsTable("case_phrase", format="orc", mode="overwrite")
 
 
 
