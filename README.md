@@ -56,7 +56,7 @@ yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
 
 - Spark submit command
 ```
-spark-submit --master yarn --deploy-mode client \
+spark-submit --master yarn --deploy-mode cluster\
 --driver-java-options "-Dlog4j.configuration=log4j.properties" \
 --num-executors 10 \
 --executor-memory 2G \

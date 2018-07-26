@@ -7,7 +7,7 @@ from pyspark.sql import SparkSession
 if __name__ == "__main__":
     sparksession = SparkSession.builder\
         .appName("query phrase count")\
-        .master("yarn-cluster")\
+        .master("yarn-client")\
         .enableHiveSupport()\
         .getOrCreate()
     df = sparksession.sql("SELECT * FROM case_phrase limit 100")
