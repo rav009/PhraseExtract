@@ -223,7 +223,7 @@ if __name__ == "__main__":
 
     sparksession = SparkSession.builder\
         .appName("cases")\
-        .master("yarn-client")\
+        .master("yarn-cluster")\
         .enableHiveSupport()\
         .getOrCreate()
 

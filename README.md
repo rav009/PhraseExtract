@@ -62,3 +62,9 @@ spark-submit --master yarn --deploy-mode client \
 --executor-memory 2G \
 pyspark_case.py
 ```
+
+- Create Hive Table
+```
+create external table case_phrase (phrase string, caseID string, num int) stored as ORC location 'adl://intellimax.azuredatalakestore.net/myhive/warehouse/case_phrase';
+```
+If you want to make this table support transaction, then the table need to be bucketed and use the keyword `TBLPROPERTIES ('transactional'='true')`
